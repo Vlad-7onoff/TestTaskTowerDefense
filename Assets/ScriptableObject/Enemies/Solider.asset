@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81c945844ee52742b27eafc166c3ecc, type: 3}
   m_Name: Solider
   m_EditorClassIdentifier: 
-  _health: 0
-  _moveSpeed: 0
-  _damage: 0
-  _sprite: {fileID: 0}
+  _health: 1
+  _reward: 50
+  _moveSpeed: 5
+  _damage: 5
+  _sprite: {fileID: 21300000, guid: 5ad78d3beba38e944b2748910f145f53, type: 3}
