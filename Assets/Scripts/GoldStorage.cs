@@ -1,19 +1,22 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
 
 public class GoldStorage : MonoBehaviour
 {
-    [SerializeField] private GoldIndicator _goldIndicator;
     [SerializeField] private int _goldAmount;
 
-    private void Awake()
+    public UnityAction<int> GoldAmountHasChanged;
+    public UnityAction NeededMoreGold;
+
+    private void Start()
     {
-        _goldIndicator.SetGoldCount(_goldAmount);
+        GoldAmountHasChanged?.Invoke(_goldAmount);
     }
 
     public void AddGold(int goldCount)
     {
         _goldAmount += goldCount;
-        _goldIndicator.SetGoldCount(_goldAmount);
+        GoldAmountHasChanged?.Invoke(_goldAmount);
     }
 
     public bool TryPayGold(int goldCount)
@@ -21,12 +24,12 @@ public class GoldStorage : MonoBehaviour
         if (_goldAmount >= goldCount)
         {
             _goldAmount -= goldCount;
-            _goldIndicator.SetGoldCount(_goldAmount);
+            GoldAmountHasChanged?.Invoke(_goldAmount);
             return true;
         }
         else
         {
-            _goldIndicator.NeededMoreGold();
+            NeededMoreGold?.Invoke();
             return false;
         }
     }

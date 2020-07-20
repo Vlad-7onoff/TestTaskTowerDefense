@@ -1,10 +1,10 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class WaveSpawner : MonoBehaviour
 {
-    [SerializeField] private WaveIndicator _waveIndicator;
     [SerializeField] private GoldStorage _goldStorage;
     [SerializeField] private Transform _path;
     [SerializeField] private List<WaveEnemiesData> _waveEnemiesData = new List<WaveEnemiesData>();
@@ -14,10 +14,12 @@ public class WaveSpawner : MonoBehaviour
 
     private int _currentWave = 0;
 
+    public UnityAction<int, int> NextWaveStarted;
+
     private void Start()
     {
         SpawnNewWave();
-        _waveIndicator.SetWaveInfo(_currentWave, _waveEnemiesData.Count);
+        NextWaveStarted?.Invoke(_currentWave, _waveEnemiesData.Count);
     }
 
     private void SpawnNewWave()
@@ -42,6 +44,6 @@ public class WaveSpawner : MonoBehaviour
             enemy.Fill(waveEnemiesData.EnemiesData[currentEnemy++], _path);
             enemy.Died += _goldStorage.AddGold;
         }
-        _waveIndicator.SetWaveInfo(_currentWave, _waveEnemiesData.Count);
+        NextWaveStarted?.Invoke(_currentWave, _waveEnemiesData.Count);
     }
 }

@@ -5,9 +5,20 @@ using UnityEngine;
 
 public class HealthIndicator : MonoBehaviour
 {
+    [SerializeField] private Health _health;
     [SerializeField] private TMP_Text _lifeCount;
 
-    public void SetLifeCount(int lifeCount)
+    private void OnEnable()
+    {
+        _health.ReceivedDamage += SetLifeCount;
+    }
+
+    private void OnDisable()
+    {
+        _health.ReceivedDamage -= SetLifeCount;
+    }
+
+    private void SetLifeCount(int lifeCount)
     {
         _lifeCount.text = lifeCount.ToString();
     }

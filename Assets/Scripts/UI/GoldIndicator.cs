@@ -4,14 +4,27 @@ using UnityEngine;
 
 public class GoldIndicator : MonoBehaviour
 {
+    [SerializeField] private GoldStorage _goldStorage;
     [SerializeField] private TMP_Text _goldCount;
 
-    public void SetGoldCount(int goldCount)
+    private void OnEnable()
+    {
+        _goldStorage.GoldAmountHasChanged += SetGoldCount;
+        _goldStorage.NeededMoreGold += NeededMoreGold;
+    }
+
+    private void OnDisable()
+    {
+        _goldStorage.GoldAmountHasChanged -= SetGoldCount;
+        _goldStorage.NeededMoreGold -= NeededMoreGold;
+    }
+
+    private void SetGoldCount(int goldCount)
     {
         _goldCount.text = goldCount.ToString();
     }
 
-    public void NeededMoreGold()
+    private void NeededMoreGold()
     {
         _goldCount.color = Color.red;
         StartCoroutine(ChangeColor());
