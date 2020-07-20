@@ -10,6 +10,7 @@ public class TowerData : ScriptableObject
     [SerializeField] private Sprite _sprite;
 
     public int Price => _price;
+    public int SellPrice => _price / 2;
     public int Damage => _damage;
     public float Range => _range;
     public float Cooldown => _cooldown;

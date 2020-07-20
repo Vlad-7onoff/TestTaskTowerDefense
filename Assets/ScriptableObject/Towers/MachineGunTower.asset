@@ -15,5 +15,5 @@ MonoBehaviour:
   _price: 250
   _damage: 10
   _range: 1.5
-  _cooldown: 0.2
-  _sprite: {fileID: 21300000, guid: 234ec9f0d7e8c224eb9138bf90847b8a, type: 3}
+  _cooldown: 0.05
+  _sprite: {fileID: 21300000, guid: 66f8c7403f917ea438db53e5de92f1b9, type: 3}

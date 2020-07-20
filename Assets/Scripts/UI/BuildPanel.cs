@@ -1,39 +1,29 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using TMPro;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class BuildPanel : MonoBehaviour
 {
-    [SerializeField] private Game _game;
-    [SerializeField] private List<TowerData> _towerData;
-    [SerializeField] private TowerBuilder _towerBuilder;
-    [SerializeField] private Button _machineGun;
-    [SerializeField] private Button _rifle;
-    [SerializeField] private Button _sniper;
+    [SerializeField] private GoldStorage _goldStorage;
+    [SerializeField] private BuildTowerButton[] _buildTowerButtons;
     [SerializeField] private Button _cancel;
-    [SerializeField] private TMP_Text _machineGunPrice;
-    [SerializeField] private TMP_Text _riflePrice;
-    [SerializeField] private TMP_Text _sniperPrice;
 
     private BuildingPlace _buildingPlace;
     private CanvasGroup _buildPanelGroup;
 
     private void OnEnable()
     {
-        _machineGun.onClick.AddListener(BuildMachineGunTower);
-        _rifle.onClick.AddListener(BuildRifleTower);
-        _sniper.onClick.AddListener(BuildSniperTower);
+        foreach (BuildTowerButton buildTowerButton in _buildTowerButtons)
+            buildTowerButton.Clicked += TryBuildTower;
+
         _cancel.onClick.AddListener(ClosePanel);
     }
 
     private void OnDisable()
     {
-        _machineGun.onClick.RemoveListener(BuildMachineGunTower);
-        _rifle.onClick.RemoveListener(BuildRifleTower);
-        _sniper.onClick.RemoveListener(BuildSniperTower);
+        foreach (BuildTowerButton buildTowerButton in _buildTowerButtons)
+            buildTowerButton.Clicked -= TryBuildTower;
+
         _cancel.onClick.RemoveListener(ClosePanel);
     }
 
@@ -41,9 +31,6 @@ public class BuildPanel : MonoBehaviour
     {
         _buildPanelGroup = GetComponent<CanvasGroup>();
         ClosePanel();
-        _machineGunPrice.text = _towerData[0].Price.ToString();
-        _riflePrice.text = _towerData[1].Price.ToString();
-        _sniperPrice.text = _towerData[2].Price.ToString();
     }
 
     public void OpenPanel(Vector3 position, BuildingPlace buildingPlace)
@@ -63,31 +50,11 @@ public class BuildPanel : MonoBehaviour
         _buildPanelGroup.blocksRaycasts = false;
     }
 
-
-
-    public void BuildMachineGunTower()
+    private void TryBuildTower(TowerData towerData)
     {
-        TryBuildTower(_towerData[0], _buildingPlace);
+        if (_goldStorage.TryPayGold(towerData.Price))
+            _buildingPlace.SetTower(towerData);
+
         ClosePanel();
-    }
-
-    public void BuildRifleTower()
-    {
-        TryBuildTower(_towerData[1], _buildingPlace);
-        ClosePanel();
-    }
-
-    public void BuildSniperTower()
-    {
-        TryBuildTower(_towerData[2], _buildingPlace);
-        ClosePanel();
-    }
-
-    private void TryBuildTower(TowerData towerData, BuildingPlace buildingPlace)
-    {
-        if (_game.TryPayGold(towerData.Price))
-        {
-            _towerBuilder.BuildTower(towerData, buildingPlace);
-        }
     }
 }

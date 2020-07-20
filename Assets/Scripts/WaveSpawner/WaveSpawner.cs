@@ -4,26 +4,44 @@ using UnityEngine;
 
 public class WaveSpawner : MonoBehaviour
 {
-    [SerializeField] private Transform _wavePool;
-    [SerializeField] private WaveEnemies _waveEnemies;
+    [SerializeField] private WaveIndicator _waveIndicator;
+    [SerializeField] private GoldStorage _goldStorage;
     [SerializeField] private Transform _path;
     [SerializeField] private List<WaveEnemiesData> _waveEnemiesData = new List<WaveEnemiesData>();
+    [SerializeField] private Enemy _enemy;
+    [SerializeField] private Transform _spawnParrent;
+    [SerializeField] private Timer _timer;
 
     private int _currentWave = 0;
 
     private void Start()
     {
-        SpawnWave();
+        SpawnNewWave();
+        _waveIndicator.SetWaveInfo(_currentWave, _waveEnemiesData.Count);
     }
 
-    public void SpawnWave()
+    private void SpawnNewWave()
     {
-        if (_currentWave < _waveEnemiesData.Count)
+        if (_currentWave >= _waveEnemiesData.Count)
+            return;
+
+        WaveEnemiesData currentEnemyData = _waveEnemiesData[_currentWave++];
+
+        StartCoroutine(SpawningWave(currentEnemyData));
+        StartCoroutine(_timer.SetTimeOut(SpawnNewWave, currentEnemyData.WaveTime));
+    }
+
+    private IEnumerator SpawningWave(WaveEnemiesData waveEnemiesData)
+    {
+        int currentEnemy = 0;
+
+        while (currentEnemy < waveEnemiesData.EnemiesData.Count)
         {
-            WaveEnemies waveEnemies = Instantiate(_waveEnemies, transform.position, Quaternion.identity, _wavePool);
-            waveEnemies.Fill(_waveEnemiesData[_currentWave], _path);
-            waveEnemies.OnWaveGone += SpawnWave;
-            _currentWave++;
+            yield return new WaitForSeconds(waveEnemiesData.SpawnTime);
+            Enemy enemy = Instantiate(_enemy, transform.position, Quaternion.identity, _spawnParrent);
+            enemy.Fill(waveEnemiesData.EnemiesData[currentEnemy++], _path);
+            enemy.Died += _goldStorage.AddGold;
         }
+        _waveIndicator.SetWaveInfo(_currentWave, _waveEnemiesData.Count);
     }
 }

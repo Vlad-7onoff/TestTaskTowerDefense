@@ -1,11 +1,10 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(CanvasGroup))]
 public class SellPanel : MonoBehaviour
 {
+    [SerializeField] private GoldStorage _goldStorage;
     [SerializeField] private Button _sell;
     [SerializeField] private Button _cancel;
 
@@ -49,7 +48,8 @@ public class SellPanel : MonoBehaviour
 
     public void SellBuilding()
     {
-        _buildingPlace.SellTower();
+        _goldStorage.AddGold(_buildingPlace.Tower.SellPrice);
+        _buildingPlace.DestroyTower();
         ClosePanel();
     }
 }

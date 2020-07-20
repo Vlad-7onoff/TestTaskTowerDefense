@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(WaypointMover))]
 [RequireComponent(typeof(SpriteRenderer))]
@@ -14,6 +15,8 @@ public class Enemy : MonoBehaviour
     private SpriteRenderer _spriteRenderer;
     private WaypointMover _waypointMover;
     private Transform _path;
+
+    public UnityAction<int> Died;
 
     public void Fill(EnemyData enemyData, Transform path)
     {
@@ -51,6 +54,7 @@ public class Enemy : MonoBehaviour
 
     public void Die()
     {
+        Died.Invoke(_reward);
         Destroy(gameObject);
     }
 }

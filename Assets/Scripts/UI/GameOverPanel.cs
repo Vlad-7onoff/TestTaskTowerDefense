@@ -5,6 +5,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class GameOverPanel : MonoBehaviour
 {
+    [SerializeField] private Health _health;
     [SerializeField] private Button _restart;
 
     private CanvasGroup _gameOverGroup;
@@ -12,11 +13,13 @@ public class GameOverPanel : MonoBehaviour
     private void OnEnable()
     {
         _restart.onClick.AddListener(OnRestartClick);
+        _health.Destroyed += GameOver;
     }
 
     private void OnDisable()
     {
         _restart.onClick.RemoveListener(OnRestartClick);
+        _health.Destroyed -= GameOver;
     }
 
     private void Start()
@@ -33,8 +36,9 @@ public class GameOverPanel : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
-    public void GameOver()
+    private void GameOver()
     {
+        Time.timeScale = 0;
         _gameOverGroup.alpha = 1;
         _gameOverGroup.interactable = true;
         _gameOverGroup.blocksRaycasts = true;
