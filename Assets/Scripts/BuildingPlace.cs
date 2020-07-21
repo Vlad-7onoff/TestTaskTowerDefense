@@ -1,11 +1,16 @@
 ﻿using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 [RequireComponent(typeof(SpriteRenderer))]
-public class BuildingPlace : MonoBehaviour
+public class BuildingPlace : MonoBehaviour, IPointerClickHandler
 {
     [SerializeField] private Tower _towerPrefab;
 
     private SpriteRenderer _spriteRenderer;
+
+    public UnityAction<Vector3, BuildingPlace> Building;
+    public UnityAction<Vector3, BuildingPlace> Destroying;
 
     public Tower Tower { get; private set; }
 
@@ -25,5 +30,13 @@ public class BuildingPlace : MonoBehaviour
     {
         _spriteRenderer.enabled = true;
         Destroy(Tower.gameObject);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (Tower == null)
+            Building?.Invoke(transform.position, this);
+        else
+            Destroying.Invoke(transform.position, this);
     }
 }

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class SellPanel : MonoBehaviour
 {
+    [SerializeField] private BuildingPlace[] _buildingPlaces;
     [SerializeField] private GoldStorage _goldStorage;
     [SerializeField] private Button _sell;
     [SerializeField] private Button _cancel;
@@ -13,12 +14,18 @@ public class SellPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        foreach (BuildingPlace buildingPlace in _buildingPlaces)
+            buildingPlace.Destroying += OpenPanel;
+
         _sell.onClick.AddListener(SellBuilding);
         _cancel.onClick.AddListener(ClosePanel);
     }
 
     private void OnDisable()
     {
+        foreach (BuildingPlace buildingPlace in _buildingPlaces)
+            buildingPlace.Destroying -= OpenPanel;
+
         _sell.onClick.RemoveListener(SellBuilding);
         _cancel.onClick.RemoveListener(ClosePanel);
     }

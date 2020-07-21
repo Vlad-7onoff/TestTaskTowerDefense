@@ -4,6 +4,7 @@ using UnityEngine.UI;
 [RequireComponent(typeof(CanvasGroup))]
 public class BuildPanel : MonoBehaviour
 {
+    [SerializeField] private BuildingPlace[] _buildingPlaces;
     [SerializeField] private GoldStorage _goldStorage;
     [SerializeField] private BuildTowerButton[] _buildTowerButtons;
     [SerializeField] private Button _cancel;
@@ -13,6 +14,9 @@ public class BuildPanel : MonoBehaviour
 
     private void OnEnable()
     {
+        foreach (BuildingPlace buildingPlace in _buildingPlaces)
+            buildingPlace.Building += OpenPanel;
+
         foreach (BuildTowerButton buildTowerButton in _buildTowerButtons)
             buildTowerButton.Clicked += TryBuildTower;
 
@@ -21,6 +25,9 @@ public class BuildPanel : MonoBehaviour
 
     private void OnDisable()
     {
+        foreach (BuildingPlace buildingPlace in _buildingPlaces)
+            buildingPlace.Building -= OpenPanel;
+
         foreach (BuildTowerButton buildTowerButton in _buildTowerButtons)
             buildTowerButton.Clicked -= TryBuildTower;
 
